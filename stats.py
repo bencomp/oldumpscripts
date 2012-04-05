@@ -2,7 +2,16 @@ import json
 import fileinput
 import sys
 
+"""Creates a JSON file with statistics.
 
+Usage: sed -nre "s/^[^{]*//p" <ol_dump_file> | python stats.py output.json
+
+This script reads the standard input, one JSON record from Open Library per line,
+and basically counts keys, classifications and identifiers. Keys are counted for 
+separate record types (author, edition, work, etc.); classifications and identifiers are 
+counted when available.
+
+"""
 if sys.argv[len(sys.argv)-1] != sys.argv[0]:
 	outputfile = open(sys.argv[len(sys.argv)-1], 'wb')
 else:
@@ -14,11 +23,20 @@ stats = {
 	"error": []
 	}
 
+# special keys: classifications and identifiers that are lists (hence no ocaid)
+special_class = ["lc_classifications", "dewey_decimal_class"]
+special_id    = ["isbn_10", "isbn_13", "lccn", "oclc_numbers"]
 
 def classifications_stats(record, type):
 	"""Counts classifications in the record.
 	
 	"""
+    for c in special_class:
+		if c in record.keys():
+            if c in stats[type]["sc"]:
+                stats[type]["sc"][c] = stats[type]["sc"][c] + len(record[c])
+            else:
+                stats[type]["sc"][c] = len(record[c])
 	#if isinstance(record["classifications"], dict):
 	for k in record["classifications"].keys():
 		if k in stats[type]["classifications"].keys():
@@ -37,6 +55,12 @@ def identifiers_stats(record, type):
 	"""Counts identifiers in the record.
 	
 	"""
+    for i in special_id:
+		if i in record.keys():
+            if i in stats[type]["si"]:
+                stats[type]["si"][i] = stats[type]["si"][i] + len(record[i])
+            else:
+                stats[type]["si"][i] = len(record[i])
 	for k in record["identifiers"].keys():
 		if k in stats[type]["identifiers"].keys():
 			stats[type]["identifiers"][k] = stats[type]["identifiers"][k] + 1
@@ -141,7 +165,7 @@ for line in f:
 	if t in stats.keys():
 		stats[t]["countr"] = stats[t]["countr"] + 1
 	else:
-		stats[t] = {"countr": 1, "keys": {}, "classifications": {}, "c": {}, "identifiers": {}, "i": {}}
+		stats[t] = {"countr": 1, "keys": {}, "classifications": {}, "c": {}, "sc": {}, "identifiers": {}, "i": {}, "si": {}}
 		print "new type:", t
 	
 	try:

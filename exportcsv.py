@@ -8,8 +8,8 @@ def export_csv(stats, basename):
       outfile = basename+"-"+type+".csv"
       file = open(outfile, 'wb')
       writer = csv.writer(file)
-      writer.writerow(["key".encode('utf-8'), "number".encode('utf-8')])
-      writer.writerow(["total records".encode('utf-8'), stats[type]["countr"]])
+      writer.writerow(["key".encode('utf-8'), "number of records".encode('utf-8'), "number of instances".encode('utf-8')])
+      writer.writerow(["total records".encode('utf-8'), stats[type]["countr"], 0])
       for k in stats[type]["keys"].keys():
         writer.writerow([k.encode('utf-8'), stats[type]["keys"][k]])
       if len(stats[type]["identifiers"]) > 0:
@@ -18,16 +18,16 @@ def export_csv(stats, basename):
         writer.writerow(["identifier".encode('utf-8'), "number of records".encode('utf-8'), 
           "number of instances".encode('utf-8')])
         for id in stats[type]["identifiers"].keys():
-          writer.writerow([id.encode('utf-8'), stats[type]["identifiers"][id], 
-            stats[type]["i"][id]])
+          writer.writerow([id.encode('utf-8'), stats[type]["identifiers"][id][0], 
+            stats[type]["identifiers"][id][1]])
       if len(stats[type]["classifications"]) > 0:
         clfile = basename+"-"+type+"-cls.csv"
         writer = csv.writer(open(clfile, 'wb'))
         writer.writerow(["classification".encode('utf-8'), "number of records", 
           "number of instances"])
         for id in stats[type]["classifications"].keys():
-          writer.writerow([unicode(id).encode('utf-8'), stats[type]["classifications"][id], 
-            stats[type]["c"][id]])
+          writer.writerow([unicode(id).encode('utf-8'), stats[type]["classifications"][id][0], 
+            stats[type]["classifications"][id][1]])
       print outfile, "written."
 
 

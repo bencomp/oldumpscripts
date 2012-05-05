@@ -34,21 +34,22 @@ def classifications_stats(record, type):
     """
     for c in special_class:
         if c in record.keys():
-            stats[type]["sc"][c] = stats[type]["sc"][c] + len(record[c])
+            stats[type]["sc"][c][0] = stats[type]["sc"][c][0] + 1
+            stats[type]["sc"][c][1] = stats[type]["sc"][c][1] + len(record[c])
     #if isinstance(record["classifications"], dict):
     for k in record["classifications"].keys():
         if k in stats[type]["classifications"].keys():
-            stats[type]["classifications"][k] = stats[type]["classifications"][k] + 1
+            stats[type]["classifications"][k][0] = stats[type]["classifications"][k][0] + 1
             if isinstance(record["classifications"][k], list):
-                stats[type]["c"][k] = stats[type]["c"][k] + len(record["classifications"][k])
+                stats[type]["classifications"][k][1] = stats[type]["classifications"][k][1] + len(record["classifications"][k])
             else:
-                stats[type]["c"][k] = stats[type]["c"][k] + 1
+                stats[type]["classifications"][k][1] = stats[type]["classifications"][k][1] + 1
         else:
-            stats[type]["classifications"][k] = 1
+            stats[type]["classifications"][k][0] = 1
             if isinstance(record["classifications"][k], list):
-                stats[type]["c"][k] = len(record["classifications"][k])
+                stats[type]["classifications"][k][1] = len(record["classifications"][k])
             else:
-                stats[type]["c"][k] = 1
+                stats[type]["classifications"][k][1] = 1
                 
     #else:
         # classifications are not in a dict
@@ -60,20 +61,20 @@ def identifiers_stats(record, type):
     """
     for i in special_id:
         if i in record.keys():
-            stats[type]["si"][i] = stats[type]["si"][i] + len(record[i])
+            stats[type]["si"][i][0] = stats[type]["si"][i][0] + 1
+            stats[type]["si"][i][1] = stats[type]["si"][i][1] + len(record[i])
     for k in record["identifiers"].keys():
         if k in stats[type]["identifiers"].keys():
-            stats[type]["identifiers"][k] = stats[type]["identifiers"][k] + 1
+            stats[type]["identifiers"][k][0] = stats[type]["identifiers"][k][0] + 1
             if isinstance(record["identifiers"][k], list):
-                stats[type]["i"][k] = stats[type]["i"][k] + len(record["identifiers"][k])
+                stats[type]["identifiers"][k][1] = 
+                  stats[type]["identifiers"][k][1] + len(record["identifiers"][k])
             else:
-                stats[type]["i"][k] = stats[type]["i"][k] + 1
+                stats[type]["identifiers"][k][1] = stats[type]["identifiers"][k][1] + 1
         else:
-            stats[type]["identifiers"][k] = 1
+            stats[type]["identifiers"][k] = [1,1]
             if isinstance(record["identifiers"][k], list):
-                stats[type]["i"][k] = len(record["identifiers"][k])
-            else:
-                stats[type]["i"][k] = 1
+                stats[type]["identifiers"][k][1] = len(record["identifiers"][k])
 
 def key_stats(record, type):
     """Counts keys in the record.
@@ -81,9 +82,13 @@ def key_stats(record, type):
     """
     for k in record.keys():
         if k in stats[type]["keys"].keys():
-            stats[type]["keys"][k] = stats[type]["keys"][k] + 1
+            stats[type]["keys"][k][0] = stats[type]["keys"][k][0] + 1
+            if isinstance(record[k], list):
+                stats[type]["keys"][k][1] = stats[type]["keys"][k][1] + len(record[k])
+            else:
+                stats[type]["keys"][k][1] = stats[type]["keys"][k][1] + 1
         else:
-            stats[type]["keys"][k] = 1
+            stats[type]["keys"][k] = [1,1]
     
     if "identifiers" in record.keys():
         identifiers_stats(record, type)
@@ -171,11 +176,11 @@ for line in f:
     if t in stats.keys():
         stats[t]["countr"] = stats[t]["countr"] + 1
     else:
-        stats[t] = {"countr": 1, "keys": {}, "classifications": {}, "c": {}, "sc": {}, "identifiers": {}, "i": {}, "si": {}}
+        stats[t] = {"countr": 1, "keys": {}, "classifications": {}, "sc": {}, "identifiers": {}, "si": {}}
         for c in special_class:
-            stats[t]["sc"][c] = 0
+            stats[t]["sc"][c] = [0,0]
         for i in special_id:
-            stats[t]["si"][i] = 0
+            stats[t]["si"][i] = [0,0]
         print "new type:", t
     
     try:

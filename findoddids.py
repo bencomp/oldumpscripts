@@ -3,6 +3,8 @@ import fileinput
 import csv
 import sys
 
+# Usage: sed -nrf edition-json.txt <ol_dump> | python oddids.txt oddids.csv
+# where edition-json.txt makes sed output the JSON documents, but only for edition-type records.
 
 if sys.argv[len(sys.argv)-1] != sys.argv[0]:
     writer = csv.writer(open(sys.argv[len(sys.argv)-1], 'wb'))

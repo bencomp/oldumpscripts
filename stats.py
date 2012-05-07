@@ -67,8 +67,7 @@ def identifiers_stats(record, type):
         if k in stats[type]["identifiers"].keys():
             stats[type]["identifiers"][k][0] = stats[type]["identifiers"][k][0] + 1
             if isinstance(record["identifiers"][k], list):
-                stats[type]["identifiers"][k][1] = 
-                  stats[type]["identifiers"][k][1] + len(record["identifiers"][k])
+                stats[type]["identifiers"][k][1] = stats[type]["identifiers"][k][1] + len(record["identifiers"][k])
             else:
                 stats[type]["identifiers"][k][1] = stats[type]["identifiers"][k][1] + 1
         else:

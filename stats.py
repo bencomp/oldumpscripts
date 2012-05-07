@@ -108,6 +108,8 @@ def determine_type(object):
             return "redirect_edition"
         elif object["type"]["key"] == "/type/delete":
             return "deleted_edition"
+        elif object["type"]["key"] == "/type/volume":
+            return "volume"
         else:
             stats["confused"].append((object["type"]["key"],object["key"]))
             return "confused_edition"

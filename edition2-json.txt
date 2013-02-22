@@ -1,0 +1,1 @@
+/^\/type\/edition\t\/books/ s/^[^{]*//p

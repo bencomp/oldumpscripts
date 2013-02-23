@@ -41,11 +41,26 @@ class UnicodeWriter:
 if sys.argv[len(sys.argv)-1] != sys.argv[0]:
     fn = sys.argv[len(sys.argv)-1]
     writer = UnicodeWriter(open(fn, 'wb'))
-    writer.writerow(["Edition key","Title","Slug","Subtitle","Subtitle slug","Number of works","First work","Number of authors","First author","Number of publishers","First publisher","Publisher slug","Number of publish places","First publish place","Publish place slug","Publication year", "Format", "Dimensions", "Number of pages"])
+    writer.writerow(["Edition key","Title","Slug","Subtitle","Subtitle slug","Number of works","First work","Number of authors","First author","Number of publishers","First publisher","Publisher slug","Number of publish places","First publish place","Publish place slug","Publication year", "Format", "Dimensions", "Weight", "Number of pages"])
     errorrecords = open(fn+"-error.txt", 'wb')
 else:
     sys.exit("No filename supplied!")
 
+def createSlug(input):
+    slug = unicode(input).lower() # .strip('. /,:;-_\\!@#$%^&*()+=\'".\sʻ')
+    slug = slug.replace('.','')
+    slug = slug.replace(' ','')
+    slug = slug.replace(',','')
+    slug = slug.replace(':','')
+    slug = slug.replace(';','')
+    slug = slug.replace('-','')
+    slug = slug.replace('\'','')
+    slug = slug.replace('"','')
+    slug = slug.replace('(','')
+    slug = slug.replace(')','')
+    slug = slug.replace('&','')
+    slug = slug.replace('_','')
+    return slug
     
 # Open standard input
 f = fileinput.input('-')
@@ -57,7 +72,7 @@ pubdate_max_length = 0
 key_max_length = 0
 format_max_length = 0
 dimensions_max_length = 0
-
+weight_max_length = 0
 
 for line in f:
     record = json.loads(line)
@@ -132,11 +147,16 @@ for line in f:
         dimensions = record["physical_dimensions"]
         dimensions_max_length = max(len(dimensions), dimensions_max_length)
     
+    weight = ""
+    if "weight" in record.keys():
+        weight = record["weight"]
+        weight_max_length = max(len(weight), weight_max_length)
+    
     number_of_pages = 0
     if "number_of_pages" in record.keys():
         number_of_pages = record["number_of_pages"]
     
-    writer.writerow([key, title, slug, sub, subslug, num_works, first_work, num_authors, first_author, num_publishers, first_publisher, publisher_slug, num_publishplaces, first_publishplace, publishplaceslug, pubdate, format, dimensions, number_of_pages])
+    writer.writerow([key, title, slug, sub, subslug, num_works, first_work, num_authors, first_author, num_publishers, first_publisher, publisher_slug, num_publishplaces, first_publishplace, publishplaceslug, pubdate, format, dimensions, weight, number_of_pages])
 
 print "title_max_length:", title_max_length
 print "subtitle_max_length:", subtitle_max_length

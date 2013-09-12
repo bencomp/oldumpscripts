@@ -159,7 +159,7 @@ cnx = mysql.connector.connect(user=u, password=p,
 cursor = cnx.cursor()
 counter = 0
 
-for line in open("../ol_dump_2013-07-31.txt"):
+for line in open("../ol_dump_2013-08-31.txt"):
     
     try:
         l2 = re.sub(pattern, "", line)
@@ -173,7 +173,7 @@ for line in open("../ol_dump_2013-07-31.txt"):
     
     except Exception as e:
         #print sys.exc_info()
-        logging.exception(record["key"] + " " + e)
+        logging.exception("%s %s" % (record["key"], e))
         print record["key"]
         print e
         #line.encode('ascii', 'backslashreplace')
